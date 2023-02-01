@@ -5,17 +5,13 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage, SimpleEventIsolation
 from aiogram.fsm.storage.redis import RedisStorage, DefaultKeyBuilder
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler
-from aiogram_dialog import DialogRegistry
 from aiohttp import web
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from app.tgbot.handlers.setup import register_handlers
-from app.tgbot.middlewares.db import DbSessionMiddleware
-from app.tgbot.services.set_commands import set_commands
 from configreader import config
-from tgbot.middlewares.maintenance import MaintenanceMiddleware
-from tgbot.middlewares.throttling import ThrottlingMiddleware
+from tgbot.handlers.setup import register_handlers, register_middlewares
+from tgbot.services.set_commands import set_commands
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +33,7 @@ async def main():
 
     if config.redis_dsn:
         storage = RedisStorage.from_url(config.redis_dsn,
-                                        key_builder=DefaultKeyBuilder(prefix='shop_bot', with_destiny=True))
+                                        key_builder=DefaultKeyBuilder(prefix='template_bot', with_destiny=True))
     else:
         storage = MemoryStorage()
 
@@ -48,18 +44,11 @@ async def main():
 
     bot = Bot(token=config.bot_token, parse_mode="HTML")
     dp = Dispatcher(storage=storage, events_isolation=SimpleEventIsolation())
-    dialog_registry = DialogRegistry(dp)
-
     # Register middlewares
+    register_middlewares(dp, db_pool)
+    # Register handlers
+    dialog_registry = register_handlers(dp=dp)
 
-    dp.callback_query.middleware(DbSessionMiddleware(db_pool))
-    dp.inline_query.middleware(DbSessionMiddleware(db_pool))
-    dp.message.middleware(MaintenanceMiddleware())
-    dp.callback_query.middleware(MaintenanceMiddleware())
-    dp.message.middleware(ThrottlingMiddleware())
-    dp.callback_query.middleware(ThrottlingMiddleware())
-
-    register_handlers(dp=dp, dialog_registry=dialog_registry)
     try:
 
         if not config.webhook_domain:

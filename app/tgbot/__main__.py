@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 from configreader import config
+from infrastructure.database.create_tables import create_tables
 from tgbot.handlers.setup import register_handlers, register_middlewares
 from tgbot.services.set_commands import set_commands
 
@@ -40,6 +41,7 @@ async def main():
     # Creating DB connections pool
     engine = create_async_engine(config.postgres_dsn, future=True)
     db_pool = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+    await create_tables(engine)
     logging.debug('DB successfully initialized')
 
     bot = Bot(token=config.bot_token, parse_mode="HTML")

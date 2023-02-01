@@ -44,3 +44,7 @@ class UserReader(SQLAlchemyRepo):
         result = (await self.session.execute(query))
         user = result.scalars().all()
         return parse_obj_as(list[UserDTO], user)
+
+    async def get_all_users(self):
+        query = await self.session.execute(select(User))
+        return parse_obj_as(list[UserDTO], query.scalars().all())

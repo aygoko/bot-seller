@@ -5,6 +5,7 @@ from sqlalchemy import select, insert
 from sqlalchemy import update
 
 from domain.dto.user import UserDTO
+from infrastructure.database.models.invoice import Invoice
 from infrastructure.database.models.user import User
 from infrastructure.database.repositories.repo import SQLAlchemyRepo
 
@@ -22,6 +23,12 @@ class UserRepo(SQLAlchemyRepo):
         await self.session.execute(
             update(User).values(balance=User.balance + amount).where(
                 User.user_id == user_id))
+        await self.session.commit()
+
+    async def change_payment_status(self, event_id: int, status: bool, payment_id: int = None):
+        await self.session.execute(
+            update(Invoice).values(paid=status, payment_id=payment_id).where(
+                Invoice.invoice_id == event_id))
         await self.session.commit()
 
 

@@ -1,9 +1,12 @@
+import uuid
+from datetime import datetime
 from typing import List
 
 from pydantic import parse_obj_as
 from sqlalchemy import select, update
 
 from domain.dto.user import UserDTO
+from infrastructure.database.models.promocode import Promocode
 from infrastructure.database.models.user import User
 from infrastructure.database.repositories.repo import SQLAlchemyRepo
 
@@ -34,3 +37,12 @@ class AdminRepo(SQLAlchemyRepo):
         _ = await self.session.execute(query)
         await self.session.commit()
         return _.rowcount
+
+    async def add_promocode(self, promo_name: str):
+        promocode = Promocode(
+            name=promo_name,
+            created_at=datetime.now()
+        )
+        await self.session.add(promocode)
+        await self.session.commit()
+        return promocode.promocode_id

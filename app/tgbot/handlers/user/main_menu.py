@@ -8,16 +8,16 @@ main_menu_dialog = Dialog(
     Window(
         Format('Привет!'),
         Url(
-            Const("Подписка"),
+            Const("Доступ в приват на месяц"),
             Const("https://t.me/donate")
         ),
         Button(
-            Const("Файл"),
+            Const("Купить методичку"),
 
             # ссылка на функцию
         ),
         Button(
-            Const("Бесконечная подписка"),
+            Const("Доступ в приват навсегда"),
             # ссылка на функцию
         ),
         state=MainMenu.main_menu

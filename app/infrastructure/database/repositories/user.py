@@ -6,6 +6,8 @@ from sqlalchemy import update
 
 from domain.dto.user import UserDTO
 from infrastructure.database.models.invoice import Invoice
+from infrastructure.database.models.product import Item
+from infrastructure.database.models.promocode import Promocode, UserPromoCode
 from infrastructure.database.models.user import User
 from infrastructure.database.repositories.repo import SQLAlchemyRepo
 
@@ -55,3 +57,25 @@ class UserReader(SQLAlchemyRepo):
     async def get_all_users(self):
         query = await self.session.execute(select(User))
         return parse_obj_as(list[UserDTO], query.scalars().all())
+
+    async def check_promo_status(self, tg_id: int, promo: str):
+        query = select(Promocode).where(Promocode.name == promo)
+        result: [Promocode] = (await self.session.execute(query)).first()
+        if result:
+            # Check if user already used this promo code
+            query_check = await self.session.execute(
+                select(UserPromoCode).where(UserPromoCode.user_id == tg_id))
+            if query_check.first():
+                return None
+            # Add promo code to user history
+            await self.session.execute(
+                insert(UserPromoCode).values(user_id=tg_id, promo_code=promo, used_at=datetime.now()))
+            return result[0].value
+        else:
+            return None
+
+    async def get_item_price(self, item_id: int):
+        query = await self.session.execute(
+            select(Item).where(Item.item_id == item_id))
+        result = query.first()
+        return result[0].item_price

@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Boolean
 
+from infrastructure.database.base import Base
 
-class Invoice(BaseModel):
+
+class Invoice(Base):
     __tablename__ = "invoices"
     __tableargs__ = {"extend_existing": True}
 

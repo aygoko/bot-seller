@@ -4,9 +4,10 @@ from pydantic import parse_obj_as
 from sqlalchemy import select, insert
 from sqlalchemy import update
 
+from domain.dto.products import ProductDTO
 from domain.dto.user import UserDTO
 from infrastructure.database.models.invoice import Invoice
-from infrastructure.database.models.product import Item
+from infrastructure.database.models.product import Item, Product
 from infrastructure.database.models.promocode import Promocode, UserPromoCode
 from infrastructure.database.models.user import User
 from infrastructure.database.repositories.repo import SQLAlchemyRepo
@@ -79,3 +80,7 @@ class UserReader(SQLAlchemyRepo):
             select(Item).where(Item.item_id == item_id))
         result = query.first()
         return result[0].item_price
+
+    async def get_products(self) -> list[ProductDTO]:
+        query = await self.session.execute(select(Product))
+        return parse_obj_as(list[ProductDTO], query.scalars().all())

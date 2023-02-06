@@ -7,7 +7,7 @@ from sqlalchemy import update
 from domain.dto.products import ProductDTO
 from domain.dto.user import UserDTO
 from infrastructure.database.models.invoice import Invoice
-from infrastructure.database.models.product import Item, Product
+from infrastructure.database.models.product import Product
 from infrastructure.database.models.promocode import Promocode, UserPromoCode
 from infrastructure.database.models.user import User
 from infrastructure.database.repositories.repo import SQLAlchemyRepo

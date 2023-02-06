@@ -5,7 +5,7 @@ from aiogram_dialog import DialogRegistry
 
 from tgbot.filters.admin import IsAdmin
 from tgbot.handlers.admin.admin import register_admin_router
-from tgbot.handlers.user import main_menu, pdf_dialog
+from tgbot.handlers.user import main_menu
 from tgbot.handlers.user.start import register_user_router
 from tgbot.middlewares.db import DbSessionMiddleware
 from tgbot.middlewares.deny_access import AccessMiddleware
@@ -38,7 +38,6 @@ def register_dialogs(dp: Dispatcher, dialogs_router: Router):
     # ========= User dialogs =========
     user_router = Router()
     dialog_registry.register(main_menu.main_menu_dialog, router=user_router)
-    dialog_registry.register(pdf_dialog.pdf_dialog, router=user_router)
     dialogs_router.include_router(user_router)
     logger.info('Dialogs successfully registered')
     return dialog_registry

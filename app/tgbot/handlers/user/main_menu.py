@@ -1,31 +1,47 @@
 import operator
 
 from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.kbd import Url, Select, Start
+from aiogram_dialog.widgets.input import TextInput
+from aiogram_dialog.widgets.kbd import Url, Select, SwitchTo
 from aiogram_dialog.widgets.text import Format, Const
 
+from tgbot.handlers.dialogs.user.getters.payments import get_payment_link
 from tgbot.handlers.dialogs.user.getters.products import get_products
-from tgbot.handlers.dialogs.user.on_clicks import choose_product
-from tgbot.states.main_menu import MainMenu
-
+from tgbot.handlers.dialogs.user.on_clicks.promo_codes import check_input_promo
+from tgbot.handlers.dialogs.user.on_clicks.select_product import choose_product
 from tgbot.states.user.buy_product import BuyProduct
 
 main_menu_dialog = Dialog(
     Window(
         Format('Привет!'),
+        Const('Выберите товар'),
         Url(
             Const("Доступ в приват на месяц"),
             Const("https://t.me/donate")
         ),
         Select(
-            Const('Выберите товар'),
             Format('{item.product_name} за {item.product_price} рублей'),
             id='product',
             item_id_getter=operator.attrgetter('product_id'),
+            items='products',
             on_click=choose_product
         ),
         state=BuyProduct.choose_product,
         getter=get_products
+    ),
+    Window(
+        Const('Введите промокод'),
+        TextInput(id='promo_code', on_success=check_input_promo),
+        SwitchTo(Const('Пропустить'), id='skip_promo', state=BuyProduct.pay_url),
+        state=BuyProduct.enter_promo_code
+    ),
+    Window(
+        Format('Применен промокод на {amount} рублей, к оплате цена товара(с примененным промокодом) рублей'),
+        Url(
+            Const("Оплатить"),
+            Const("https://t.me/donate")  # ссылка на оплату yoomoney
+        ),
+        state=BuyProduct.pay_url,
+        getter=get_payment_link
     )
-
 )

@@ -42,6 +42,6 @@ class AdminRepo(SQLAlchemyRepo):
             name=promo_name,
             created_at=datetime.now()
         )
-        await self.session.add(promocode)
+        self.session.add(promocode)
         await self.session.commit()
         return promocode.promocode_id

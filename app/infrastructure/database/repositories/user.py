@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from pydantic import parse_obj_as
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, func
 from sqlalchemy import update
 
 from domain.dto.invoice import InvoiceDTO
@@ -101,3 +101,8 @@ class UserReader(SQLAlchemyRepo):
         query = await self.session.execute(
             select(Product).where(Product.product_id == product_id))
         return parse_obj_as(ProductDTO, query.first())
+
+    async def get_promo_codes_stats(self):
+        query = await self.session.execute(
+            select(UserPromoCode.promo_code, func.count(UserPromoCode.user_id)).group_by(UserPromoCode.promo_code))
+        return query.all()

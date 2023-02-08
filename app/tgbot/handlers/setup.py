@@ -4,6 +4,7 @@ from aiogram import Dispatcher, Router, F
 from aiogram_dialog import DialogRegistry
 
 from tgbot.filters.admin import IsAdmin
+from tgbot.handlers.admin import admin_menu, changes
 from tgbot.handlers.admin.admin import register_admin_router
 from tgbot.handlers.user import main_menu, buy_dialog
 from tgbot.handlers.user.start import register_user_router
@@ -34,7 +35,8 @@ def register_dialogs(dp: Dispatcher, dialogs_router: Router):
 
     # ========= Admin dialogs =========
     admin_router = Router()
-
+    dialog_registry.register(admin_menu.admin_menu_dialog, router=dialogs_router)
+    dialog_registry.register(changes.admin_changes_dialog, router=dialogs_router)
     # ========= User dialogs =========
     user_router = Router()
     dialog_registry.register(main_menu.main_menu_dialog, router=user_router)

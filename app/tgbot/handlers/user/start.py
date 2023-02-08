@@ -8,6 +8,7 @@ from aiogram_dialog import DialogManager, StartMode
 from configreader import config
 from infrastructure.database.repositories.user import UserRepo
 from tgbot.states.main_menu import MainMenu
+from tgbot.states.user.buy_product import BuyProduct
 from tgbot.utils.system_config import getsysteminfo, get_process_uptime
 
 
@@ -36,7 +37,7 @@ async def start(m: Message, dialog_manager: DialogManager, user_repo: UserRepo, 
     # if command args needed e.g. /start 123 wil return 123
     # args = command.args
     await user_repo.update_user_if_not_exists(m.from_user.id, m.from_user.full_name, datetime.datetime.now())
-    await dialog_manager.start(MainMenu.main_menu, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(BuyProduct.choose_product, mode=StartMode.RESET_STACK)
 
 
 async def get_id(m: Message):

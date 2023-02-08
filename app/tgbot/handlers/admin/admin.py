@@ -1,30 +1,15 @@
-import asyncio
 import logging
 
-from aiogram import Router, Bot
-from aiogram.exceptions import TelegramBadRequest
+from aiogram import Router
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 from aiogram_dialog import DialogManager, StartMode
 
 from infrastructure.database.repositories.admin import AdminRepo
 from infrastructure.database.repositories.bot import BotRepo
-from infrastructure.database.repositories.user import UserReader
 from tgbot.states.admin.menu import AdminMenu
 
 logger = logging.getLogger(__name__)
-
-
-async def sending_messages_to_all_users(m: Message, user_reader: UserReader, bot: Bot):
-    users = await user_reader.get_all_users()
-    for user in users:
-        await asyncio.sleep(0.04)
-        try:
-            await bot.send_message(user.user_id, m.text)
-        except TelegramBadRequest as e:
-            logger.error('Error while sending message to user {}: {}'.format(user.user_id, e))
-
-    logger.info(f'User {m.from_user.id} sent message to all users')
 
 
 async def admin_start(m: Message, dialog_manager: DialogManager):

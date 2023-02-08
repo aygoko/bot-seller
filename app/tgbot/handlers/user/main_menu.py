@@ -2,7 +2,7 @@ import operator
 
 from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.input import TextInput
-from aiogram_dialog.widgets.kbd import Url, Select, SwitchTo
+from aiogram_dialog.widgets.kbd import Url, Select, SwitchTo, Back
 from aiogram_dialog.widgets.text import Format, Const
 
 from tgbot.handlers.dialogs.user.getters.payments import get_payment_link
@@ -33,6 +33,7 @@ main_menu_dialog = Dialog(
         Const('Введите промокод'),
         TextInput(id='promo_code', on_success=check_input_promo),
         SwitchTo(Const('Пропустить'), id='skip_promo', state=BuyProduct.pay_url),
+        SwitchTo(Const('Назад'), id='back_to_products', state=BuyProduct.choose_product),
         state=BuyProduct.enter_promo_code
     ),
     Window(
@@ -41,6 +42,7 @@ main_menu_dialog = Dialog(
             Const("Оплатить"),
             Const("https://t.me/donate")  # ссылка на оплату yoomoney
         ),
+        SwitchTo(Const('Назад'), id='back_to_promo', state=BuyProduct.enter_promo_code),
         state=BuyProduct.pay_url,
         getter=get_payment_link
     )

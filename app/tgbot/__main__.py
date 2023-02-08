@@ -12,6 +12,7 @@ from sqlalchemy.orm import sessionmaker
 from configreader import config
 from infrastructure.database.create_tables import create_tables
 from tgbot.handlers.setup import register_handlers, register_middlewares
+from tgbot.pay_api.process_payment import api_handler
 from tgbot.services.set_commands import set_commands
 
 logger = logging.getLogger(__name__)
@@ -71,10 +72,14 @@ async def main():
             )
             # Creating an aiohttp application
             app = web.Application()
+            app['registry'] = dialog_registry
+            app['db_pool'] = db_pool
+            app['bot'] = bot
+
             SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=config.webhook_path)
-            # API ROUTES if needed
-            # app.add_routes([web.get(f'{config.webhook_path}/api', api_handler),
-            #                 web.post(f'{config.webhook_path}/api', api_handler)])
+            app.add_routes([web.get(f'{config.webhook_path}/api_https', api_handler),
+                            web.post(f'{config.webhook_path}/api_https', api_handler)])  # YooMoney API
+
             runner = web.AppRunner(app)
             await runner.setup()
             site = web.TCPSite(runner, host=config.app_host, port=config.app_port)

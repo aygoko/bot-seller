@@ -5,4 +5,3 @@ class PromoSG(StatesGroup):
     stats = State()
     enter_name = State()
     created = State()
-

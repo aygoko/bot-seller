@@ -1,0 +1,14 @@
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: "unless-stopped"
+    ports:
+      - "7001:7001"
+    env_file:
+      - .env
+    volumes:
+      - logs:home/hum4noid/logs:/app/logs
+volumes:
+  logs:

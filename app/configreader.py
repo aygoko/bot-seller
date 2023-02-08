@@ -16,6 +16,7 @@ class Config(BaseSettings):
     webhook_path: Optional[str]
     environment: Optional[str]
     service_name: Optional[str]
+    yoomoney_receiver: Optional[int]
 
     @validator("webhook_path")
     def validate_webhook_path(cls, v, values):

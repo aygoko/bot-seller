@@ -2,7 +2,7 @@ import operator
 
 from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.input import TextInput
-from aiogram_dialog.widgets.kbd import Url, Select, SwitchTo, Back
+from aiogram_dialog.widgets.kbd import Url, Select, SwitchTo
 from aiogram_dialog.widgets.text import Format, Const
 
 from tgbot.handlers.dialogs.user.getters.payments import get_payment_link
@@ -16,8 +16,8 @@ main_menu_dialog = Dialog(
         Format('Привет!'),
         Const('Выберите товар'),
         Url(
-            Const("Доступ в приват на месяц"),
-            Const("https://t.me/donate")
+            Const('Доступ в приват на месяц'),
+            Const('https://t.me/donate')
         ),
         Select(
             Format('{item.product_name} за {item.product_price} рублей'),
@@ -37,10 +37,10 @@ main_menu_dialog = Dialog(
         state=BuyProduct.enter_promo_code
     ),
     Window(
-        Format('Применен промокод на {amount} рублей, к оплате цена товара(с примененным промокодом) рублей'),
+        Format('Применен промокод на {amount} рублей, к оплате {total} рублей'),
         Url(
-            Const("Оплатить"),
-            Const("https://t.me/donate")  # ссылка на оплату yoomoney
+            Const('Оплатить'),
+            Format('{pay_link}')  # ссылка на оплату yoomoney
         ),
         SwitchTo(Const('Назад'), id='back_to_promo', state=BuyProduct.enter_promo_code),
         state=BuyProduct.pay_url,

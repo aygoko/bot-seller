@@ -34,7 +34,6 @@ def register_dialogs(dp: Dispatcher, dialogs_router: Router):
     dialog_registry = DialogRegistry(dp)
 
     # ========= Admin dialogs =========
-    admin_router = Router()
     dialog_registry.register(admin_menu.admin_menu_dialog, router=dialogs_router)
     dialog_registry.register(changes.admin_changes_dialog, router=dialogs_router)
     # ========= User dialogs =========

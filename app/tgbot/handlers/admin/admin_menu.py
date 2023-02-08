@@ -2,8 +2,8 @@ from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.kbd import Start
 from aiogram_dialog.widgets.text import Const
 
-from tgbot.states.admin.promosg import PromoSG
 from tgbot.states.admin.menu import AdminMenu
+from tgbot.states.admin.promosg import PromoSG
 
 admin_menu_dialog = Dialog(
     Window(

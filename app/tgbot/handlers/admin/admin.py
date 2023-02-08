@@ -15,16 +15,16 @@ from tgbot.states.admin.menu import AdminMenu
 logger = logging.getLogger(__name__)
 
 
-async def sending_messages_to_all_users(m: Message, user_reader: UserReader, bot: Bot):
+async def sending_messages_to_all_users(event: Message, user_reader: UserReader, bot: Bot):
     users = await user_reader.get_all_users()
     for user in users:
         await asyncio.sleep(0.04)
         try:
-            await bot.send_message(user.user_id, m.text)
+            await bot.send_message(user.user_id, event.text)
         except TelegramBadRequest as e:
             logger.error('Error while sending message to user {}: {}'.format(user.user_id, e))
 
-    logger.info(f'User {m.from_user.id} sent message to all users')
+    logger.info(f'User {event.from_user.id} sent message to all users')
 
 
 async def admin_start(m: Message, dialog_manager: DialogManager):
@@ -81,6 +81,10 @@ async def ban_user(m: Message, command: CommandObject, admin_repo: AdminRepo):
         logger.info(f'User {m.from_user.id} tried to ban {user_id}, but he is not found')
 
 
+async def get_file_id(m: Message):
+    await m.reply(m.document.file_id)
+
+
 def register_admin_router(router: Router):
     router.message.register(start_maintenance,
                             Command(commands=['maintenance'], commands_prefix='/!'), state='*')
@@ -90,3 +94,7 @@ def register_admin_router(router: Router):
                             Command(commands=['add_admin'], commands_prefix='/!'), state='*')
     router.message.register(ban_user,
                             Command(commands=['ban'], commands_prefix='/!'), state='*')
+    router.message.register(admin_start,
+                            Command(commands=['admin'], commands_prefix='/!'), state='*')
+    router.message.register(get_file_id,
+                            content_types=['document'], state='*')

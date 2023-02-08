@@ -8,4 +8,3 @@ async def get_products(dialog_manager: DialogManager, user_reader: UserReader, *
     return {
         'products': products
     }
-

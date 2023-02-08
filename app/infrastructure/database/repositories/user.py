@@ -28,6 +28,12 @@ class UserRepo(SQLAlchemyRepo):
                 User.user_id == user_id))
         await self.session.commit()
 
+    async def add_invoice(self, user_id: int, amount: float, invoice_hash: str):
+        await self.session.execute(
+            insert(Invoice).values(user_id=user_id, amount=amount, created_at=datetime.now(),
+                                   invoice_hash=invoice_hash))
+        await self.session.commit()
+
     async def change_payment_status(self, event_id: int, status: bool, payment_id: int = None):
         await self.session.execute(
             update(Invoice).values(paid=status, payment_id=payment_id).where(
@@ -77,7 +83,7 @@ class UserReader(SQLAlchemyRepo):
 
     async def get_item_price(self, item_id: int):
         query = await self.session.execute(
-            select(Item).where(Item.item_id == item_id))
+            select(Product).where(Product.item_id == item_id))
         result = query.first()
         return result[0].item_price
 

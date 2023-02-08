@@ -1,15 +1,13 @@
-import asyncio
 import logging
-
-from aiogram import Router, Bot
+import asyncio
 from aiogram.exceptions import TelegramBadRequest
+from aiogram import Router
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 from aiogram_dialog import DialogManager, StartMode
 
 from infrastructure.database.repositories.admin import AdminRepo
 from infrastructure.database.repositories.bot import BotRepo
-from infrastructure.database.repositories.user import UserReader
 from tgbot.states.admin.menu import AdminMenu
 
 logger = logging.getLogger(__name__)

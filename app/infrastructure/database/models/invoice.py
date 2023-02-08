@@ -14,3 +14,4 @@ class Invoice(Base):
     paid = Column(Boolean, nullable=False, default=False)
     payment_id = Column(Integer, nullable=True)
     invoice_hash = Column(String, nullable=False)
+    product_id = Column(ForeignKey("products.product_id"), nullable=False)

@@ -6,3 +6,5 @@ class ProductDTO(DTO):
     product_id: int
     product_name: str
     product_price: int
+    product_type: str
+    product_content: str

@@ -4,6 +4,7 @@ from pydantic import parse_obj_as
 from sqlalchemy import select, insert
 from sqlalchemy import update
 
+from domain.dto.invoice import InvoiceDTO
 from domain.dto.products import ProductDTO
 from domain.dto.user import UserDTO
 from infrastructure.database.models.invoice import Invoice
@@ -28,10 +29,10 @@ class UserRepo(SQLAlchemyRepo):
                 User.user_id == user_id))
         await self.session.commit()
 
-    async def add_invoice(self, user_id: int, amount: float, invoice_hash: str):
+    async def add_invoice(self, user_id: int, amount: float, invoice_hash: str, product_id: int):
         await self.session.execute(
             insert(Invoice).values(user_id=user_id, amount=amount, created_at=datetime.now(),
-                                   invoice_hash=invoice_hash))
+                                   invoice_hash=invoice_hash, product_id=product_id))
         await self.session.commit()
 
     async def change_payment_status(self, event_id: int, status: bool, payment_id: int = None):
@@ -83,10 +84,20 @@ class UserReader(SQLAlchemyRepo):
 
     async def get_item_price(self, item_id: int):
         query = await self.session.execute(
-            select(Product).where(Product.item_id == item_id))
+            select(Product).where(Product.product_id == item_id))
         result = query.first()
-        return result[0].item_price
+        return result[0].product_price
 
     async def get_products(self) -> list[ProductDTO]:
         query = await self.session.execute(select(Product))
         return parse_obj_as(list[ProductDTO], query.scalars().all())
+
+    async def get_invoice(self, invoice_hash: str):
+        query = await self.session.execute(
+            select(Invoice).where(Invoice.invoice_hash == invoice_hash))
+        return parse_obj_as(InvoiceDTO, query.scalars().all())
+
+    async def get_product(self, product_id: int):
+        query = await self.session.execute(
+            select(Product).where(Product.product_id == product_id))
+        return parse_obj_as(ProductDTO, query.first())

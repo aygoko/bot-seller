@@ -10,3 +10,5 @@ class Product(Base):
     product_id = Column(Integer, primary_key=True, autoincrement=True)
     product_name = Column(String, nullable=False)
     product_price = Column(Integer, nullable=False)
+    product_type = Column(String, nullable=False)
+    product_content = Column(String, nullable=False)

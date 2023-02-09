@@ -14,11 +14,11 @@ main_menu_dialog = Dialog(
         Const('Выберите товар'),
         Url(
             Const('Доступ в приват на месяц'),
-            Const('https://t.me/donate')
+            Const('https://t.me/+fghmBu1d_HRlYjli')
         ),
         Group(
             Select(
-                Format('{item.product_name} за {item.product_price} рублей'),
+                Format('{item.product_name} за {item.product_price} ₽'),
                 id='product',
                 item_id_getter=operator.attrgetter('product_id'),
                 items='products',

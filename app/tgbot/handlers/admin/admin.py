@@ -1,7 +1,8 @@
-import logging
 import asyncio
-from aiogram.exceptions import TelegramBadRequest
+import logging
+
 from aiogram import Router, Bot
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 from aiogram_dialog import DialogManager, StartMode

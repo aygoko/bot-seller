@@ -22,7 +22,7 @@ async def main():
     if config.environment == 'PRODUCTION':
 
         logging.basicConfig(
-            filename='bot_webhook.log',
+            filename='logs/bot_seller_prod.log',
             filemode='a',
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -55,7 +55,7 @@ async def main():
     try:
 
         if not config.webhook_domain:
-
+            await bot.delete_webhook()
             await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
         else:
             # Suppress aiohttp access log completely

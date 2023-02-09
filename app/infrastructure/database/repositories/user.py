@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from pydantic import parse_obj_as
@@ -12,6 +13,8 @@ from infrastructure.database.models.product import Product
 from infrastructure.database.models.promocode import Promocode, UserPromoCode
 from infrastructure.database.models.user import User
 from infrastructure.database.repositories.repo import SQLAlchemyRepo
+
+logger = logging.getLogger(__name__)
 
 
 class UserRepo(SQLAlchemyRepo):
@@ -35,7 +38,7 @@ class UserRepo(SQLAlchemyRepo):
                                    invoice_hash=invoice_hash, product_id=product_id))
         await self.session.commit()
 
-    async def change_payment_status(self, event_id: int, status: bool, payment_id: int = None):
+    async def change_payment_status(self, event_id: str, status: bool, payment_id: str = None):
         await self.session.execute(
             update(Invoice).values(paid=status, payment_id=payment_id).where(
                 Invoice.invoice_id == event_id))
@@ -95,12 +98,12 @@ class UserReader(SQLAlchemyRepo):
     async def get_invoice(self, invoice_hash: str):
         query = await self.session.execute(
             select(Invoice).where(Invoice.invoice_hash == invoice_hash))
-        return parse_obj_as(InvoiceDTO, query.scalars().all())
+        return parse_obj_as(InvoiceDTO, query.scalars().first())
 
     async def get_product(self, product_id: int):
         query = await self.session.execute(
             select(Product).where(Product.product_id == product_id))
-        return parse_obj_as(ProductDTO, query.first())
+        return parse_obj_as(ProductDTO, query.scalars().first())
 
     async def get_promo_codes_stats(self):
         query = await self.session.execute(

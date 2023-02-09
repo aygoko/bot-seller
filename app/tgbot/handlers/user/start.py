@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from aiogram import Router
 from aiogram.filters import Command, CommandObject
@@ -9,6 +10,8 @@ from configreader import config
 from infrastructure.database.repositories.user import UserRepo
 from tgbot.states.user.menu import UserMenu
 from tgbot.utils.system_config import getsysteminfo, get_process_uptime
+
+logger = logging.getLogger(__name__)
 
 
 async def configuration(m: Message):
